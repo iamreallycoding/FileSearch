@@ -1,5 +1,4 @@
 import os
-import os.path
 import pandas as pd
 
 
@@ -13,20 +12,20 @@ class FileSearch:
 		Method to list all files in the path, returns all files in sub-folders as well if
 		sub_folders is True.
 
-		For every file in the path, if a directory, checks to see whether sub-folders are included
-		and then re-runs the method on that path. If not a directory appends file onto the end of the list.
+		For every file in the path, if a file_path, checks to see whether sub-folders are included
+		and then re-runs the method on that path. If not a file_path appends file onto the end of the list.
 
 		:param sub_folders: Return files from sub-folders?
 		:return: Returns list of all files in the path
 		"""
 		result = []
 		for file in os.listdir(self.path):
-			directory = self.path + self.slash + file
-			if os.path.isdir(directory):
+			file_path = self.path + self.slash + file
+			if os.path.isdir(file_path):
 				if sub_folders:
-					sub = FileSearch(directory)
-					sub_files = sub.files(True)
-					result = result + sub_files
+					sub = FileSearch(file_path)
+					subs = sub.files(True)
+					result = result + subs
 				else:
 					result.append(file)
 			else:
@@ -39,8 +38,8 @@ class FileSearch:
 		Method to retrieve all files in specified path along with size of each file, returns files
 		in sub-folders as well if sub_folders is True.
 
-		For every file in the path, f a directory, checks to see whether sub-folders are included
-		and then re-runs the method on that path. If not a directory, creates a dictionary of file path and size
+		For every file in the path, f a file_path, checks to see whether sub-folders are included
+		and then re-runs the method on that path. If not a file_path, creates a dictionary of file path and size
 		creates data frame from that dictionary and appends to existing data frame.
 
 		:param sub_folders: Return files from sub-folders?
@@ -51,17 +50,17 @@ class FileSearch:
 		data = pd.DataFrame(lst)
 
 		for file in os.listdir(self.path):
-			directory_file = self.path + self.slash + file
-			if os.path.isdir(directory_file):
+			file_path = self.path + self.slash + file
+			if os.path.isdir(file_path):
 				if sub_folders:
-					sub = FileSearch(directory_file)
-					sub_files = sub.size(True)
-					data = data.append(sub_files, ignore_index=True)
+					sub = FileSearch(file_path)
+					subs = sub.size(True)
+					data = data.append(subs, ignore_index=True)
 				else:
 					pass
 			else:
-				size = round((os.path.getsize(directory_file))/1000000, 3)
-				file_size = {'File': [directory_file], 'Size': [size]}
+				size = round((os.path.getsize(file_path))/1000000, 3)
+				file_size = {'File': [file_path], 'Size': [size]}
 				file_data = pd.DataFrame(file_size)
 				data = data.append(file_data, ignore_index=True)
 
