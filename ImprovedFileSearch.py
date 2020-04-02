@@ -7,7 +7,7 @@ class FileSearch:
         self.path = path
         self.slash = "\\"
 
-    def list_files(self, sub_folders):
+    def list_files(self, sub_folders=False):
         if sub_folders:
             files = []
             for file in os.listdir(self.path):
@@ -23,7 +23,7 @@ class FileSearch:
 
         return files
 
-    def file_sizes(self, sub_folders):
+    def file_sizes(self, sub_folders=False):
         diction = {'File':[], 'Size':[]}
         if sub_folders:
             data_frame = pd.DataFrame(diction)
@@ -40,14 +40,14 @@ class FileSearch:
             sizes = []
             for file in files:
                 file_path = self.path + self.slash + file
-                file_size = os.path.getsize(file_path)
+                file_size = round(os.path.getsize(file_path)/1000000, 3)
                 sizes.append(file_size)
             diction['File'] = files
             diction['Size'] = sizes
             data_frame = pd.DataFrame(diction)
             return data_frame
 
-    def file_size_sorted(self, sub_folders, number, ascending=False):
+    def file_size_sorted(self, number=3, sub_folders=False, ascending=False):
         data_frame = self.file_sizes(sub_folders=sub_folders)
         sorted_data_frame = data_frame.sort_values(by=['Size'], ascending=ascending)
 
